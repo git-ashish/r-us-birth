@@ -70,3 +70,24 @@ us_births %>%
 ggplot(data = summary_by_year, aes(x = year)) +
   geom_smooth(mapping = aes(y = total)) +
   scale_y_continuous(limits = c(0, 4400000))
+
+#5. What about particular days like 29th Feb, 4th July, 25th Dec, 1st Jan?
+us_births %>% filter(month %in% c(1,2,7,12)) %>% mutate(day_month = paste(month, date_of_month, sep="-")) %>% group_by(day_month) %>% summarise(mb = mean(births)) %>%
+  ggplot(aes(x = day(paste("2016", day_month, sep="-")), y = mb)) + 
+  geom_smooth( aes(color = month(ymd(paste("2016", day_month, sep="-")), label = T)), se=F) + 
+  labs(
+    color = 'Months',
+    x = 'Days',
+    y = 'Average Births per day'
+  )
+
+# 5. ii) Make Y axis start from 0
+us_births %>% filter(month %in% c(1,2,7,12)) %>% mutate(day_month = paste(month, date_of_month, sep="-")) %>% group_by(day_month) %>% summarise(mb = mean(births)) %>%
+  ggplot(aes(x = day(paste("2016", day_month, sep="-")), y = mb)) + 
+  geom_smooth( aes(color = month(ymd(paste("2016", day_month, sep="-")), label = T)), se=F) + 
+  labs(
+    color = 'Months',
+    x = 'Days',
+    y = 'Average Births per day'
+  ) + 
+  scale_y_continuous(limits = c(0, 12000))
